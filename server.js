@@ -14,7 +14,7 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3002;
 
-app.listen(PORT, () => console.log(`Woohoo! we are up on port ${PORT}`));
+app.listen(PORT, () => console.log(`Woohoos! we are up on port ${PORT}`));
 
 
 
@@ -29,39 +29,43 @@ app.get('/', (request, response)=>{
 app.get('/weather', (request, response, next)=>{
 
   try {
+    // let lat = request.query.lat;
+    // let lon = request.query.lon;
+    let searchQuery = request.query.searchQuery;
 
-    let queriedWeather = request.query.city_name;
+    let foundCityWeather = weatherData.find(city => city.city_name === searchQuery);
+    let forecast = new Forecast();
+    let forecastArr = forecast.getForecast(foundCityWeather);
 
-    let foundCityWeather = weatherData.find(city => city.city_name === queriedWeather);
-    let dataToSend = new Forecast(foundCityWeather);
+    console.log(request.query);
 
-    response.status(200).send(dataToSend);
+    response.status(200).send(forecastArr);
   } catch (error) {
+    console.log(error.message);
     next(error);
   }
 });
 
 // Forecast Class - Using a class with an object constructor to create a simpler object
 class Forecast {
-  constructor(forecastObj){
-    this.date = forecastObj.valid_date;
-    this.description = forecastObj.weather.description;
+  constructor(){}
+  getForecast(data) {
+    let forecastArr = [];
+    for (let i = 0; i < data.forecast.length; i++) {
+      let forecastObj = {
+        date: data.forecast[i].valid_date,
+        description: `Low of ${this.forecastData[i].low_temp}, high of ${this.forecastData[i].high_temp} with ${this.forecastData[i].weather.description}`
+      };
+      forecastArr.push(forecastObj);
+    }
+    return forecastArr;
   }
 }
 
+let forecast = new Forecast();
+let forecastArr = forecast.getForecast(weatherData[0]);
+console.log(forecastArr);
 
-
-
-
-app.get('/search', (request, response)=>{
-  let userAPIKey = request.query.key;
-  let locationQuery = request.query.q;
-
-  console.log(request.query);
-
-  response.status(200).send(`Hello ${firstName} ${lastName}, welcome to my server!`);
-
-});
 
 
 // CATCH ALL ENDPOINT - should be the very last endpoint defined
