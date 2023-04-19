@@ -49,16 +49,16 @@ app.get('/weather', (request, response, next)=>{
 // Forecast Class - Using a class with an object constructor to create a simpler object
 class Forecast {
   constructor(){}
-  getForecast(data) {
-    let forecastArr = [];
-    for (let i = 0; i < data.forecast.length; i++) {
+  getForecast(forecastArr) {
+    let simpleForecastArr = [];
+    for (let i = 0; i < forecastArr.data.length; i++) {
       let forecastObj = {
-        date: data.forecast[i].valid_date,
-        description: `Low of ${this.forecastData[i].low_temp}, high of ${this.forecastData[i].high_temp} with ${this.forecastData[i].weather.description}`
+        date: forecastArr.data[i].valid_date,
+        description: `Low of ${forecastArr.data[i].low_temp} degrees Celsius, high of ${forecastArr.data[i].high_temp} degrees Celsius with ${forecastArr.data[i].weather.description}`
       };
-      forecastArr.push(forecastObj);
+      simpleForecastArr.push(forecastObj);
     }
-    return forecastArr;
+    return simpleForecastArr;
   }
 }
 
