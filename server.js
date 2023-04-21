@@ -3,100 +3,103 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-let weatherData = require('./data/weather.json');
-// const axios = require('axios');
+// let weatherData = require('./data/weather.json');
+const axios = require('axios');
+const getWeather = require('./modules/weather');
 
 const app = express();
 
 app.use(cors());
 
 const PORT = process.env.PORT || 3002;
-
-app.listen(PORT, () => console.log(`Woohoos! we are up on port ${PORT}`));
+app.listen(PORT, () => console.log(`You did it! We are up on port ${PORT}`));
 
 
 app.get('/', (request, response)=>{
   response.status(200).send('Welcome to my City Explorer server!');
 });
 
-app.get('/weather', (request, response, next)=>{
-  console.log('Weather endpoint hit');
-  console.log('All weather data: ', weatherData);
 
+app.get('/weather', getWeather);
+
+// app.get('/weather', async (request, response, next)=>{
+
+//   try {
+//     // let searchQuery = request.query.searchQuery;
+//     let lat = request.query.lat;
+//     let lon = request.query.lon;
+
+//     let url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.REACT_APP_WEATHERBIT_API_KEY}&lat=${lat}&lon=${lon}`;
+
+//     // let foundCityWeather = weatherData.find(city => city.city_name === searchQuery);
+//     let foundCityWeather= await axios.get(url);
+
+//     console.log('foundCityWeather:', foundCityWeather);
+
+//     // let forecasts = foundCityWeather.data.map(weatherData => new Forecast(weatherData));
+//     let forecasts = foundCityWeather.data.data.map(obj => new Forecast(obj));
+
+//     response.status(200).send(forecasts);
+//   } catch (error) {
+//     console.log(error.message);
+//     next(error);
+//   }
+// });
+
+// class Forecast {
+//   constructor(forecastObj){
+//     this.date = forecastObj.valid_date;
+//     this.description = forecastObj.weather.description;
+//     this.low = forecastObj.low_temp;
+//     this.high = forecastObj.high_temp;
+//     this.temp = forecastObj.temp;
+//   }
+// }
+
+
+
+app.get('/movies', async (request, response, next) => {
   try {
-    // let lat = request.query.lat;
-    // let lon = request.query.lon;
-    let searchQuery = request.query.searchQuery;
+    let city = request.query.city;
+    console.log(request.query);
 
+    let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_MOVIEDB_API_KEY}&query=${city}`;
 
-    // TODO: ERROR MESSAGE
+    let moviesFromAxios = await axios.get(url);
 
-    let foundCityWeather = weatherData.find(city => city.city_name === searchQuery);
+    let moviesToSend = moviesFromAxios.data.results.map(obj=> new Movie(obj));
 
-    console.log('foundCityWeather:', foundCityWeather);
-
-    let forecasts = foundCityWeather.data.map(weatherData => new Forecast(weatherData));
-
-
-    response.status(200).send(forecasts);
+    response.status(200).send(moviesToSend);
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 });
 
-class Forecast {
-  constructor(forecastObj){
-    this.date = forecastObj.valid_date;
-    this.description = forecastObj.weather.description;
+class Movie {
+  constructor(movieObj){
+    this.id = movieObj.id;
+    this.title = movieObj.title;
+    this.overview = movieObj.overview;
+    this.imgUrl = movieObj.poster_path;
   }
 }
 
-// getForecast(forecastObj) {
-//   let formattedForecast = [];
-//   for (let i = 0; i < forecastObj.length; i++) {
-//     let forecastArr = {
-//       date: forecastObj[i].valid_date,
-//       description: `Low of ${forecastObj.data[i].low_temp} degrees Celsius, high of ${forecastObj.data[i].high_temp} degrees Celsius with ${forecastObj.data[i].weather.description}`
-//     };
-//     formattedForecast.push(forecastArr);
-//   }
-//   return formattedForecast;
-// }
+app.get('/search', (req, res) => {
+  let userApi = req.query.key;
+  let locQry = req.query.q;
 
-// TODO: BUILD AN ENDPOINT THAT WILL CALL OUT TO AN API
-// app.get('/photos', getPhotos);
+  console.log(req.query);
 
-// async function getPhotos (request, response, next) {
-//   try {
-//     let myLocalCity = request.query.city;
-
-//     let url=`https://api.unsplash.com/search/photos?client_id=${process.env.UNSPLASH_API_KEY}&query=${myLocalCity}`;
-
-//     let photosFromAxios = await axios.get(url);
-
-//     let dataToSend = photosFromAxios.data.results.map(obj => new Photo(obj));
-
-//     response.status(200).send(dataToSend);
-//   } catch (error) {
-//     next(error);
-//   }
-// }
-
-// class Photo {
-//   constructor(picObj){
-//     this.src = picObj.urls.regular;
-//     this.alt = picObj.alt_description;
-//     this.username = picObj.user.name;
-//   }
-// }
-
+  res.status(200).send(`Hello ${userApi} ${locQry}! Welcome to my server`);
+});
 
 app.get('*', (request,response) =>{
   response.status(404).send('This page does not exist');
 });
 
+// eslint-disable-next-line no-unused-vars
 app.use((error, request, response, next) => {
-  console.log(error.message);
-  response.status(500).send(error.message);
+  console.log(error.stack);
+  response.status(500).send('You broke it! ' + error.message);
 });
+
