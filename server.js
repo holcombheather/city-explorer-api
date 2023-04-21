@@ -68,6 +68,7 @@ app.get('/movies', async (request, response, next) => {
     let moviesFromAxios = await axios.get(url);
 
     let moviesToSend = moviesFromAxios.data.results.map(obj=> new Movie(obj));
+    console.log(moviesToSend[0]);
 
     response.status(200).send(moviesToSend);
   } catch (error) {
