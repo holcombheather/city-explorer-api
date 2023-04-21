@@ -13,8 +13,8 @@ async function getWeather(request, response, next) {
     console.log(lat);
     console.log(lon);
 
-    // let url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHERBIT_API_KEY}&lat=${lat}&lon=${lon}`;
-    let url = `http://api.weatherbit.io/v2.0/forecast/daily?key=f744a68161be484bb6ab31a6e1b7be1d&lat=35.6812665&lon=139.757653`;
+    let url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHERBIT_API_KEY}&lat=${lat}&lon=${lon}`;
+    // let url = `http://api.weatherbit.io/v2.0/forecast/daily?key=f744a68161be484bb6ab31a6e1b7be1d&lat=35.6812665&lon=139.757653`;
 
 
     let foundCityWeather = await axios.get(url);
