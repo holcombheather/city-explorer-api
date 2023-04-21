@@ -24,9 +24,9 @@ app.get('/weather', (request, response, next)=>{
   console.log('All weather data: ', weatherData);
 
   try {
-    // let lat = request.query.lat;
-    // let lon = request.query.lon;
-    let searchQuery = request.query.searchQuery;
+    let lat = request.query.lat;
+    let lon = request.query.lon;
+    // let searchQuery = request.query.searchQuery;
 
 
     // TODO: ERROR MESSAGE
