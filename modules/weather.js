@@ -1,6 +1,7 @@
 'use strict';
 
-const axios = require('axios');
+let {cacheData} = require('../cache');
+// const axios = require('axios');
 
 
 
@@ -12,22 +13,22 @@ async function getWeather(request, response, next) {
 
     console.log(lat);
     console.log(lon);
-
+    const key = `weather-lat${lat}-lon${lon}`;
     let url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.REACT_APP_WEATHERBIT_API_KEY}&lat=${lat}&lon=${lon}`;
-    // let url = `http://api.weatherbit.io/v2.0/forecast/daily?key=f744a68161be484bb6ab31a6e1b7be1d&lat=35.6812665&lon=139.757653`;
 
+    cacheData(response, key, url, 'data', Forecast, 1);
 
-    let foundCityWeather = await axios.get(url);
-    console.log('foundCityWeather:', foundCityWeather);
+    // let foundCityWeather = await axios.get(url);
+    // console.log('foundCityWeather:', foundCityWeather);
 
-    let forecasts = foundCityWeather.data.data.map(obj => new Forecast(obj));
+    // let forecasts = foundCityWeather.data.data.map(obj => new Forecast(obj));
 
-    response.status(200).send(forecasts);
-    console.log(forecasts);
+    // response.status(200).send(forecasts);
+    // console.log(forecasts);
 
   } catch (error) {
-    next(error);
-    console.log(error.message);
+    // next(error);
+    console.log(error);
   }
 }
 
