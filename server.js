@@ -3,8 +3,9 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-const axios = require('axios');
+// const axios = require('axios');
 const getWeather = require('./modules/weather');
+const getMovies = require('./modules/movies');
 
 const app = express();
 
@@ -21,33 +22,7 @@ app.get('/', (request, response)=>{
 
 app.get('/weather', getWeather);
 
-
-app.get('/movies', async (request, response, next) => {
-  try {
-    let city = request.query.city;
-    console.log(request.query);
-
-    let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_MOVIEDB_API_KEY}&query=${city}`;
-
-    let moviesFromAxios = await axios.get(url);
-
-    let moviesToSend = moviesFromAxios.data.results.map(obj=> new Movie(obj));
-    console.log(moviesToSend[0]);
-
-    response.status(200).send(moviesToSend);
-  } catch (error) {
-    next(error);
-  }
-});
-
-class Movie {
-  constructor(movieObj){
-    this.id = movieObj.id;
-    this.title = movieObj.title;
-    this.overview = movieObj.overview;
-    this.imgUrl = movieObj.poster_path;
-  }
-}
+app.get('/movies', getMovies);
 
 app.get('/search', (req, res) => {
   let userApi = req.query.key;
