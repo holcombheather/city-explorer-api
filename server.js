@@ -3,7 +3,6 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-// let weatherData = require('./data/weather.json');
 const axios = require('axios');
 const getWeather = require('./modules/weather');
 
@@ -21,41 +20,6 @@ app.get('/', (request, response)=>{
 
 
 app.get('/weather', getWeather);
-
-// app.get('/weather', async (request, response, next)=>{
-
-//   try {
-//     // let searchQuery = request.query.searchQuery;
-//     let lat = request.query.lat;
-//     let lon = request.query.lon;
-
-//     let url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.REACT_APP_WEATHERBIT_API_KEY}&lat=${lat}&lon=${lon}`;
-
-//     // let foundCityWeather = weatherData.find(city => city.city_name === searchQuery);
-//     let foundCityWeather= await axios.get(url);
-
-//     console.log('foundCityWeather:', foundCityWeather);
-
-//     // let forecasts = foundCityWeather.data.map(weatherData => new Forecast(weatherData));
-//     let forecasts = foundCityWeather.data.data.map(obj => new Forecast(obj));
-
-//     response.status(200).send(forecasts);
-//   } catch (error) {
-//     console.log(error.message);
-//     next(error);
-//   }
-// });
-
-// class Forecast {
-//   constructor(forecastObj){
-//     this.date = forecastObj.valid_date;
-//     this.description = forecastObj.weather.description;
-//     this.low = forecastObj.low_temp;
-//     this.high = forecastObj.high_temp;
-//     this.temp = forecastObj.temp;
-//   }
-// }
-
 
 
 app.get('/movies', async (request, response, next) => {
